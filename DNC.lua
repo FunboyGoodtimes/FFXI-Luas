@@ -25,20 +25,26 @@ end
 
 function job_setup()
     state.ArmorMode = M{['description']='Armor Mode', 'TP', 'Defense'}
+    state.MainWeapon = M{'Twashtar','Tauret'}
+    state.Offhand = M{'Crepuscular Knife','Fusetto +2'}
 
     -- Prevents Presto automation from repeatedly trying to fire.
     presto_automation_enabled = true
 end
 
 function user_setup()
-    send_command('bind numpad2 gs c cycle ArmorMode')
+    send_command('bind numpad1 gs c cycle MainWeapon')
+    send_command('bind numpad2 gs c cycle Offhand')
+    send_command('bind numpad5 gs c cycle ArmorMode')
 
     select_default_macro_book()
     send_command('wait 2; input /lockstyleset '..lockstyle_set)
 end
 
 function user_unload()
+    send_command('unbind numpad1')
     send_command('unbind numpad2')
+    send_command('unbind numpad5')
 end
 
 function init_gear_sets()
@@ -61,7 +67,7 @@ function init_gear_sets()
     }
     -- General Waltz set.
     sets.precast.Waltz = {
-    ammo="Staunch Tathlum",
+    ammo="Yamarang",
     head="Etoile Tiara",
     body="Dancer's Casaque",
     hands="Nyame Gauntlets",
@@ -78,7 +84,7 @@ function init_gear_sets()
 
     -- Healing Waltz set.
     sets.precast.Waltz['Healing Waltz'] = {
-    ammo="Staunch Tathlum",
+    ammo="Yamarang",
     head="Etoile Tiara",
     body="Dancer's Casaque",
     hands="Nyame Gauntlets",
@@ -100,6 +106,18 @@ function init_gear_sets()
 
     -- Steps.
     sets.precast.Step = {
+    ammo="Yamarang",
+    head="Maculele Tiara +3",
+    body="Malignance Tabard",
+    hands="Malignance Gloves",
+    legs="Malignance Tights",
+    neck={ name="Etoile Gorget +2", augments={'Path: A',}},
+    waist="Null Belt",
+    left_ear="Mache Earring +1",
+    right_ear="Mache Earring +1",
+    left_ring="Moonlight Ring",
+    right_ring="Chirich Ring +1",
+    back="Null Shawl",
     feet="Macu. Toe Shoes +1",
     }
 
@@ -175,7 +193,7 @@ function init_gear_sets()
     }
 
     sets.precast.WS['Evisceration'] = {
-        -- Add Evisceration gear here.
+    back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','Crit.hit rate+10',}},
     }
 
     sets.precast.WS['Shark Bite'] = {
@@ -238,9 +256,9 @@ function init_gear_sets()
     waist="Windbuffet Belt +1",
     left_ear="Cessance Earring",
     right_ear="Sherida Earring",
-    left_ring="Chirich Ring +1",
+    left_ring="Gere Ring,
     right_ring="Moonlight Ring",
-    back="Null Shawl",
+    back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10',}},
     }
 
     -- Defense engaged set.
@@ -322,7 +340,10 @@ function customize_melee_set(meleeSet)
     if state.ArmorMode.value == 'Defense' then
         meleeSet = set_combine(meleeSet, sets.engaged.Defense)
     end
-
+    meleeSet = set_combine(meleeSet,{
+        main=state.MainWeapon.value,
+        sub=state.Offhand.value,
+    })
     return meleeSet
 end
 
@@ -334,6 +355,12 @@ function job_state_change(stateField, newValue, oldValue)
             add_to_chat(158, 'Armor Mode: TP')
         end
 
+        handle_equipping_gear(player.status)
+    elseif stateField == 'MainWeapon' then
+        add_to_chat(122,'Main Weapon: '..newValue)
+        handle_equipping_gear(player.status)
+    elseif stateField == 'Offhand' then
+        add_to_chat(122,'Offhand: '..newValue)
         handle_equipping_gear(player.status)
     end
 end

@@ -62,8 +62,8 @@ function init_gear_sets()
  
     -- Jigs.
     sets.precast.Jig = {
-    legs="Etoile Tights",
-    feet="Dancer's Toe Shoes",
+    legs="Horos Tights +1",
+    feet="Maxixi Toe Shoes",
     }
     -- General Waltz set.
     sets.precast.Waltz = {
@@ -197,7 +197,19 @@ function init_gear_sets()
     }
 
     sets.precast.WS['Shark Bite'] = {
-        -- Add Shark Bite gear here.
+    ammo="Aurgelmir Orb",
+    head={ name="Herculean Helm", augments={'Attack+18','Weapon skill damage +2%','DEX+10','Accuracy+1',}},
+    body={ name="Herculean Vest", augments={'"Counter"+3','DEX+10','Accuracy+13','Attack+13',}},
+    hands="Herculean Gloves",
+    legs={ name="Herculean Trousers", augments={'Weapon skill damage +3%','DEX+5','Accuracy+14',}},
+    feet={ name="Herculean Boots", augments={'Weapon skill damage +3%','DEX+10','Accuracy+15','Attack+10',}},
+    neck={ name="Etoile Gorget +2", augments={'Path: A',}},
+    waist="Kentarch Belt +1",
+    left_ear="Moonshade Earring",
+    right_ear="Sherida Earring",
+    left_ring="Ephramad's Ring",
+    right_ring="Epaminondas's Ring",
+    back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
     }
 
     sets.precast.WS['Dancing Edge'] = {
@@ -256,7 +268,7 @@ function init_gear_sets()
     waist="Windbuffet Belt +1",
     left_ear="Cessance Earring",
     right_ear="Sherida Earring",
-    left_ring="Gere Ring,
+    left_ring="Gere Ring",
     right_ring="Moonlight Ring",
     back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10',}},
     }

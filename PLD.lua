@@ -14,8 +14,9 @@
     Keybinds:
       NumPad 1: Cycle weapon modes
       NumPad 2: Toggle TP / Defense armor mode
+      NumPad 3: Toggle DPS mode
       NumPad 9: Cycle automation modes
-      NumPad 0: Reset weapon, armor, and automation modes
+      NumPad 0: Reset weapon, armor, DPS, and automation modes
 
     Edit the gear inside init_gear_sets().
     Startup settings are near the top of user_setup().
@@ -39,6 +40,11 @@ function job_setup()
         'Defense'
     }
 
+    state.DPSMode = M{['description']='DPS Mode',
+        'Off',
+        'On'
+    }
+
     state.AutoMode = M{['description']='Automation Mode',
         'Off',
         'Majesty',
@@ -57,6 +63,7 @@ function user_setup()
 
     send_command('bind numpad1 gs c cycle WeaponMode')
     send_command('bind numpad2 gs c cycle ArmorMode')
+    send_command('bind numpad3 gs c cycle DPSMode')
     send_command('bind numpad9 gs c cycle AutoMode')
     send_command('bind numpad0 gs c reset_modes')
 
@@ -66,6 +73,7 @@ end
 function user_unload()
     send_command('unbind numpad1')
     send_command('unbind numpad2')
+    send_command('unbind numpad3')
     send_command('unbind numpad9')
     send_command('unbind numpad0')
 end
@@ -176,7 +184,7 @@ function init_gear_sets()
     }
 
     sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {
-    ammo="Oshasha's Treatise",
+    ammo="Aurgelmir Orb",
     head="Nyame Helm",
     body="Nyame Mail",
     hands="Nyame Gauntlets",
@@ -184,10 +192,10 @@ function init_gear_sets()
     feet="Nyame Sollerets",
     neck="Rep. Plat. Medal",
     waist="Sailfi Belt +1",
-    left_ear="Telos Earring",
-    right_ear="Alabaster Earring",
-    left_ring="Epaminondas's Ring",
-    right_ring="Ephramad's Ring",
+    left_ear="Moonshade Earring",
+    right_ear="Crep. Earring",
+    left_ring="Ephramad's Ring",
+    right_ring="Epaminondas's Ring",
     back="Alabaster Mantle",
     })
 
@@ -211,19 +219,19 @@ function init_gear_sets()
     sets.midcast.FastRecast = sets.precast.FC
 
     sets.midcast.Enmity = {
-        ammo="Sapience Orb",
-        head="Loess Barbuta +1",
-        body="Emet Harness +1",
-        hands="Yorium Gauntlets",
-        legs="Zoar Subligar +1",
-        feet="Eschite Greaves",
-        neck="Unmoving Collar +1",
-        waist="Creed Baudrier",
-        left_ear="Cryptic Earring",
-        right_ear="Trux Earring",
-        left_ring="Apeile Ring +1",
-        right_ring="Supershear Ring",
-        back="Moonlight Cape",
+    ammo="Staunch Tathlum",
+    head={ name="Souv. Schaller +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    body={ name="Souv. Cuirass +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    hands={ name="Souv. Handsch. +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    legs={ name="Souv. Diechlings +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    feet={ name="Souveran Schuhs +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    neck="Moonbeam Necklace",
+    waist="Plat. Mog. Belt",
+    left_ear="Friomisi Earring",
+    right_ear="Alabaster Earring",
+    left_ring="Eihwaz Ring",
+    right_ring="Stikini Ring +1",
+    back={ name="Rudianos's Mantle", augments={'HP+60','Eva.+20 /Mag. Eva.+20','HP+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
     }
 
     sets.midcast.Flash = sets.midcast.Enmity
@@ -283,6 +291,25 @@ function init_gear_sets()
     sets.midcast.Reprisal = set_combine(sets.midcast.EnhancingMagic, {
         body="Shab. Cuirass +1",
     })
+
+
+    -- Blue Magic SIRD set. Used for Sheep Song and all other Blue Magic.
+    -- Replace any pieces below with your preferred Spell Interruption Rate Down gear.
+    sets.midcast.SIRD = {
+    ammo="Staunch Tathlum",
+    head={ name="Souv. Schaller +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    body="Chev. Cuirass +3",
+    hands={ name="Yorium Gauntlets", augments={'Spell interruption rate down -10%',}},
+    legs={ name="Founder's Hose", augments={'MND+5','Attack+2',}},
+    feet={ name="Yorium Sabatons", augments={'Spell interruption rate down -10%',}},
+    neck="Moonbeam Necklace",
+    waist="Hachirin-no-Obi",
+    left_ear="Knightly Earring",
+    right_ear="Alabaster Earring",
+    left_ring="Murky Ring",
+    right_ring="Evanescence Ring",
+    back={ name="Rudianos's Mantle", augments={'HP+60','Eva.+20 /Mag. Eva.+20','HP+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
+    }
 
     sets.midcast.EnfeeblingMagic = {
         ammo="Pemphredo Tathlum",
@@ -350,16 +377,39 @@ left_ring  = {name="Moonlight Ring", bag="wardrobe1"},
 right_ring = {name="Moonlight Ring", bag="wardrobe2"},
     back={ name="Rudianos's Mantle", augments={'HP+60','Eva.+20 /Mag. Eva.+20','HP+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
     }
+
+    -- NumPad 3 toggles this full DPS set on and off.
+    sets.engaged.DPS = {
+        main="Naegling",
+        sub="Blurred Shield +1",
+        ammo="Coiste Bodhar",
+        head="Sakpata's Helm",
+        body="Sakpata's Plate",
+        hands="Sakpata's Gauntlets",
+        legs="Sakpata's Cuisses",
+        feet="Sakpata's Leggings",
+        neck="Null Loop",
+        waist="Sailfi Belt +1",
+        left_ear="Cessance Earring",
+        right_ear="Telos Earring",
+        left_ring="Chirich Ring +1",
+        right_ring="Moonlight Ring",
+        back="Null Shawl",
+    }
 end
 
 function job_precast(spell, action, spellMap, eventArgs)
-    if spell.action_type == 'Magic' and spell.skill == 'Healing Magic' then
+    if spell.skill == 'Blue Magic' then
+        equip(sets.precast.FC)
+    elseif spell.action_type == 'Magic' and spell.skill == 'Healing Magic' then
         equip(sets.precast.FC.Cure)
     end
 end
 
 function job_midcast(spell, action, spellMap, eventArgs)
-    if phalanx_spells:contains(spell.english) then
+    if spell.skill == 'Blue Magic' then
+        equip(sets.midcast.SIRD)
+    elseif phalanx_spells:contains(spell.english) then
         equip(sets.midcast.Phalanx)
     elseif spell.english == 'Reprisal' then
         equip(sets.midcast.Reprisal)
@@ -477,10 +527,18 @@ function job_status_change(newStatus, oldStatus, eventArgs)
 end
 
 function customize_idle_set(idleSet)
+    if state.DPSMode.value == 'On' then
+        return sets.engaged.DPS
+    end
+
     return set_combine(idleSet, sets.weapons[state.WeaponMode.value])
 end
 
 function customize_melee_set(meleeSet)
+    if state.DPSMode.value == 'On' then
+        return sets.engaged.DPS
+    end
+
     local selectedSet = meleeSet
 
     if state.ArmorMode.value == 'Defense' then
@@ -497,6 +555,9 @@ function job_state_change(stateField, newValue, oldValue)
     elseif stateField == 'Armor Mode' then
         add_to_chat(122, 'Armor Mode: '..newValue)
         equip_current_mode()
+    elseif stateField == 'DPS Mode' then
+        add_to_chat(122, 'DPS Mode: '..newValue)
+        equip_current_mode()
     elseif stateField == 'Automation Mode' then
         add_to_chat(122, 'Automation: '..newValue)
         auto_check_scheduled = false
@@ -512,16 +573,19 @@ function job_self_command(cmdParams, eventArgs)
     elseif cmdParams[1] == 'reset_modes' then
         state.WeaponMode:set('Burtgang')
         state.ArmorMode:set('TP')
+        state.DPSMode:set('Off')
         state.AutoMode:set('Off')
         auto_check_scheduled = false
-        add_to_chat(122, 'PLD modes reset: Burtgang / TP / Automation Off')
+        add_to_chat(122, 'PLD modes reset: Burtgang / TP / DPS Off / Automation Off')
         equip_current_mode()
         eventArgs.handled = true
     end
 end
 
 function equip_current_mode()
-    if player.status == 'Engaged' then
+    if state.DPSMode.value == 'On' then
+        equip(sets.engaged.DPS)
+    elseif player.status == 'Engaged' then
         if state.ArmorMode.value == 'Defense' then
             equip(set_combine(sets.engaged.Defense, sets.weapons[state.WeaponMode.value]))
         else

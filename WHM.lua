@@ -167,6 +167,10 @@ function initialize()
     back="Null Shawl",
     }
 
+    sets.midcast.StatusRemoval = set_combine(sets.midcast.Cure, {
+        main="Yagrush",
+    })
+
     sets.midcast.Impact = {
         head = empty,
         body = "Crepuscular Cloak",
@@ -215,6 +219,9 @@ function midcast(spell)
 
     elseif spell.english:startswith('Bar') then
         equip(sets.midcast.Barspell)
+
+    elseif spell.english == 'Erase' or spell.english:endswith('na') then
+        equip(sets.midcast.StatusRemoval)
 
     elseif spell.skill == 'Enhancing Magic' then
         equip(sets.midcast.Enhancing)
@@ -276,4 +283,9 @@ function self_command(cmd)
         auto_ja_busy = false
         check_buffs()
     end
+end
+
+
+function string.endswith(self, value)
+    return value == '' or self:sub(-#value) == value
 end

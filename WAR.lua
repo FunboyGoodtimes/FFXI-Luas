@@ -40,47 +40,50 @@ function get_sets()
     -- ENGAGED
     --------------------------------------------------------
 
-    sets.engaged = {    ammo="Aurgelmir Orb",
-    head="Boii Mask +2",
+    sets.engaged = {
+            ammo="Coiste Bodhar",
+    head="Boii Mask +3",
     body="Hjarrandi Breast.",
     hands="Sakpata's Gauntlets",
     legs="Pumm. Cuisses +3",
     feet="Pumm. Calligae +3",
-    neck="Null Loop",
+    neck={ name="War. Beads +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
-    left_ear="Cessance Earring",
+    left_ear="Schere Earring",
     right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
     left_ring="Niqmaddu Ring",
-    right_ring="Moonlight Ring",
-    back="Null Shawl",}
+    right_ring="Chirich Ring +1",
+    back={ name="Cichol's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+7','"Dbl.Atk."+10','Phys. dmg. taken-10%',}},
+ }
 
-    sets.engaged.TP = {    ammo="Aurgelmir Orb",
-    head="Boii Mask +2",
+    sets.engaged.TP = {     ammo="Coiste Bodhar",
+    head="Boii Mask +3",
     body="Hjarrandi Breast.",
     hands="Sakpata's Gauntlets",
     legs="Pumm. Cuisses +3",
     feet="Pumm. Calligae +3",
-    neck="Null Loop",
+    neck={ name="War. Beads +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
-    left_ear="Cessance Earring",
+    left_ear="Schere Earring",
     right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
     left_ring="Niqmaddu Ring",
-    right_ring="Moonlight Ring",
-    back="Null Shawl",}
+    right_ring="Chirich Ring +1",
+    back={ name="Cichol's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+7','"Dbl.Atk."+10','Phys. dmg. taken-10%',}},}
     
 
-    sets.engaged.Defense = {    ammo="Staunch Tathlum",
+    sets.engaged.Defense = {   
+            ammo="Staunch Tathlum",
     head="Sakpata's Helm",
     body="Sakpata's Plate",
     hands="Sakpata's Gauntlets",
     legs="Sakpata's Cuisses",
     feet="Sakpata's Leggings",
-    neck="Loricate Torque +1",
+    neck="Elite Royal Collar",
     waist="Plat. Mog. Belt",
-    left_ear="Alabaster Earring",
-    right_ear="Odnowa Earring +1",
-    left_ring="Murky Ring",
-    right_ring="Moonlight Ring",
+    left_ear="Odnowa Earring +1",
+    right_ear="Alabaster Earring",
+    left_ring  = {name="Moonlight Ring", bag="wardrobe1"},
+    right_ring = {name="Moonlight Ring", bag="wardrobe2"},
     back={ name="Cichol's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','VIT+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
 }
     
@@ -107,6 +110,28 @@ left_ear="Telos Earring",
 right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
 back="Null Shawl",}
 
+-- Dedicated Enmity set for Provoke
+-- Replace any pieces below with your preferred Enmity gear.
+sets.precast.JA.Enmity = set_combine(
+sets.precast.JA.Default,{ 
+        ammo="Thr. Tomahawk",
+    head="Pummeler's Mask +3",
+    body={ name="Souv. Cuirass +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    hands="Pumm. Mufflers +3",
+    legs={ name="Souv. Diechlings +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    feet={ name="Souveran Schuhs +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+    neck="Moonbeam Necklace",
+    waist="Null Belt",
+    left_ear="Friomisi Earring",
+    right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
+    left_ring="Eihwaz Ring",
+    right_ring="Shneddick Ring",
+    back={ name="Cichol's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','VIT+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
+})
+
+-- Provoke equips the Enmity set before the ability fires
+sets.precast.JA['Provoke'] = sets.precast.JA.Enmity
+
 -- Tomahawk override
 sets.precast.JA['Tomahawk'] = set_combine(
 sets.precast.JA.Default,{
@@ -129,19 +154,20 @@ ammo="Thr. Tomahawk",
     }
 
     sets.precast.WS['Savage Blade'] = set_combine(
-        sets.precast.WS,{    ammo="Knobkierrie",
+        sets.precast.WS,{
+    ammo="Knobkierrie",
     head="Agoge Mask +3",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
+    body="Sakpata's Plate",
+    hands="Sakpata's Gauntlets",
     legs="Boii Cuisses +3",
     feet="Nyame Sollerets",
-    neck="Rep. Plat. Medal",
+    neck={ name="War. Beads +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
     left_ear="Moonshade Earring",
-    right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
-    left_ring="Epaminondas's Ring",
-    right_ring="Ephramad's Ring",
-    back={ name="Cichol's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','VIT+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
+    right_ear="Schere Earring",
+    left_ring="Ephramad's Ring",
+    right_ring="Niqmaddu Ring",
+    back={ name="Cichol's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}},
     })
 
     sets.precast.WS['Upheaval'] = set_combine(
@@ -157,19 +183,19 @@ ammo="Thr. Tomahawk",
     })
 
         sets.precast.WS['Judgment'] = set_combine(
-        sets.precast.WS,{    ammo="Knobkierrie",
+        sets.precast.WS,{      ammo="Knobkierrie",
     head="Agoge Mask +3",
-    body="Nyame Mail",
-    hands="Nyame Gauntlets",
+    body="Sakpata's Plate",
+    hands="Sakpata's Gauntlets",
     legs="Boii Cuisses +3",
     feet="Nyame Sollerets",
-    neck="Rep. Plat. Medal",
+    neck={ name="War. Beads +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
     left_ear="Moonshade Earring",
-    right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
-    left_ring="Epaminondas's Ring",
-    right_ring="Ephramad's Ring",
-    back={ name="Cichol's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','VIT+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
+    right_ear="Schere Earring",
+    left_ring="Ephramad's Ring",
+    right_ring="Niqmaddu Ring",
+    back={ name="Cichol's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}},
     })
 
     --------------------------------------------------------
@@ -242,6 +268,13 @@ end
 ------------------------------------------------------------
 
 function aftercast(spell)
+
+    -- After a successful Provoke, switch Armor Mode to Defense
+    if spell.english == 'Provoke' and not spell.interrupted then
+        ArmorMode = 'Defense'
+        add_to_chat(122,'Provoke complete - Armor Mode: Defense')
+    end
+
     equip_current_set()
 end
 

@@ -9,7 +9,10 @@
 --========================================================--
 -- DNC.lua - Clean Dancer GearSwap Framework
 --========================================================--
--- NumPad 2: Toggle between TP and Defense engaged sets
+-- NumPad 1: Cycle main-hand weapons
+-- NumPad 2: Cycle off-hand weapons
+-- NumPad 3: Equip Karambit in the main-hand slot
+-- NumPad 5: Toggle between TP and Defense engaged sets
 --
 -- Edit these startup values to match your preferred setup:
 local macro_book = 6
@@ -25,7 +28,7 @@ end
 
 function job_setup()
     state.ArmorMode = M{['description']='Armor Mode', 'TP', 'Defense'}
-    state.MainWeapon = M{'Twashtar','Tauret'}
+    state.MainWeapon = M{'Twashtar','Tauret','Aeneas','Karambit'}
     state.Offhand = M{'Crepuscular Knife','Fusetto +2'}
 
     -- Prevents Presto automation from repeatedly trying to fire.
@@ -35,6 +38,7 @@ end
 function user_setup()
     send_command('bind numpad1 gs c cycle MainWeapon')
     send_command('bind numpad2 gs c cycle Offhand')
+    send_command('bind numpad3 gs c set MainWeapon Karambit')
     send_command('bind numpad5 gs c cycle ArmorMode')
 
     select_default_macro_book()
@@ -44,6 +48,7 @@ end
 function user_unload()
     send_command('unbind numpad1')
     send_command('unbind numpad2')
+    send_command('unbind numpad3')
     send_command('unbind numpad5')
 end
 
@@ -59,11 +64,17 @@ function init_gear_sets()
     --========================================================--
     -- JOB ABILITIES
     --========================================================--
+
+    -- No Foot Rise. Equips Horos Casaque before the ability activates.
+    sets.precast.JA = {}
+    sets.precast.JA['No Foot Rise'] = {
+        body="Horos Casaque",
+    }
  
     -- Jigs.
     sets.precast.Jig = {
     legs="Horos Tights +1",
-    feet="Maxixi Toe Shoes",
+    feet="Maxixi Toe Shoes +1",
     }
     -- General Waltz set.
     sets.precast.Waltz = {
@@ -212,6 +223,22 @@ function init_gear_sets()
     back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
     }
 
+    sets.precast.WS['Exenterator'] = {
+    ammo="Crepuscular Pebble",
+    head="Malignance Chapeau",
+    body="Malignance Tabard",
+    hands="Malignance Gloves",
+    legs="Malignance Tights",
+    feet="Malignance Boots",
+    neck="Fotia Gorget",
+    waist="Fotia Belt",
+    left_ear="Sherida Earring",
+    right_ear={ name="Maculele Earring", augments={'System: 1 ID: 1676 Val: 0','Accuracy+6','Mag. Acc.+6',}},
+    left_ring="Gere Ring",
+    right_ring="Ephramad's Ring",
+    back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','Weapon skill damage +10%','Phys. dmg. taken-10%',}},
+    }
+
     sets.precast.WS['Dancing Edge'] = {
         -- Add Dancing Edge gear here.
     }
@@ -269,7 +296,7 @@ function init_gear_sets()
     left_ear="Cessance Earring",
     right_ear="Sherida Earring",
     left_ring="Gere Ring",
-    right_ring="Moonlight Ring",
+    right_ring="Epona's Ring",
     back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10',}},
     }
 
@@ -313,7 +340,10 @@ end
 --========================================================--
 function job_post_precast(spell, action, spellMap, eventArgs)
 
-    if spell.type == 'Waltz' then
+    if spell.english == 'No Foot Rise' then
+        equip(sets.precast.JA['No Foot Rise'])
+
+    elseif spell.type == 'Waltz' then
         if spell.english == 'Healing Waltz' then
             equip(sets.precast.Waltz['Healing Waltz'])
         else

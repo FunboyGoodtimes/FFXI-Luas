@@ -24,10 +24,14 @@ function get_sets()
     -- Toggle variables
     MagicBurstMode = false
     DefenseMode = false
+    MPRestoreNukeMode = false
+    HoxneAmpullaMode = false
 
     -- Bind keys
+    send_command('bind numpad1 gs c toggle MPRestoreNukeMode')
     send_command('bind numpad5 gs c toggle DefenseMode')
     send_command('bind numpad7 gs c toggle MagicBurstMode')
+    send_command('bind numpad9 gs c toggle HoxneAmpullaMode')
 
     -- Macro book and lockstyle placeholders. Edit these later if you want.
     send_command('input /macro book 2; wait .1; input /macro set 3')
@@ -158,7 +162,8 @@ function get_sets()
 
     sets.midcast = {}
 
-    sets.midcast.Cure = {     main="Daybreak",
+    sets.midcast.Cure = {   
+    main="Raetic Rod +1",
     sub="Sors Shield",
     range="Dunna",
     head={ name="Vanya Hood", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
@@ -166,7 +171,7 @@ function get_sets()
     hands={ name="Vanya Cuffs", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
     legs={ name="Vanya Slops", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
     feet={ name="Vanya Clogs", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
-    neck="Bagua Charm +2",
+    neck="Hoxne Torque",
     waist="Othila Sash",
     left_ear="Malignance Earring",
     right_ear="Mendi. Earring",
@@ -175,7 +180,8 @@ function get_sets()
     back={ name="Nantosuelta's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Evasion+10','Pet: "Regen"+10','Phys. dmg. taken-10%',}},
     }
 
-    sets.midcast.Curaga = {     main="Daybreak",
+    sets.midcast.Curaga = {
+    main="Raetic Rod +1",
     sub="Sors Shield",
     range="Dunna",
     head={ name="Vanya Hood", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
@@ -183,13 +189,14 @@ function get_sets()
     hands={ name="Vanya Cuffs", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
     legs={ name="Vanya Slops", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
     feet={ name="Vanya Clogs", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}},
-    neck="Bagua Charm +2",
+    neck="Hoxne Torque",
     waist="Othila Sash",
     left_ear="Malignance Earring",
     right_ear="Mendi. Earring",
     left_ring="Stikini Ring +1",
     right_ring="Stikini Ring +1",
     back={ name="Nantosuelta's Cape", augments={'HP+60','Eva.+20 /Mag. Eva.+20','Evasion+10','Pet: "Regen"+10','Phys. dmg. taken-10%',}},
+
     }
 
     sets.midcast.Enhancing = {     main={ name="Gada", augments={'Enh. Mag. eff. dur. +5','Mag. Acc.+18','"Mag.Atk.Bns."+3','DMG:+6',}},
@@ -229,6 +236,11 @@ function get_sets()
     back={ name="Nantosuelta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','Magic Damage +10','"Mag.Atk.Bns."+10','Spell interruption rate down-10%',}},
     }
 
+    -- MP Restore Nuke set: identical to Elemental, but uses Seidr Cotehardie for body.
+    sets.midcast.ElementalMPRestore = set_combine(sets.midcast.Elemental, {
+        body="Seidr Cotehardie",
+    })
+
     sets.midcast.MagicBurst = {     main="Bunzi's Rod",
     sub="Ammurapi Shield",
     ammo="Ghastly Tathlum +1",
@@ -255,7 +267,7 @@ function get_sets()
     hands={ name="Merlinic Dastanas", augments={'Mag. Acc.+22 "Mag.Atk.Bns."+22','"Drain" and "Aspir" potency +11','CHR+10','"Mag.Atk.Bns."+9',}},
     legs={ name="Merlinic Shalwar", augments={'"Drain" and "Aspir" potency +11',}},
     feet="Agwu's Pigaches",
-    neck="Hoxne Torque",
+    neck="Erra Pendant",
     waist="Fucho-no-Obi",
     left_ear="Malignance Earring",
     right_ear="Regal Earring",
@@ -389,6 +401,12 @@ function get_sets()
     sets.TreasureHunter = {
     }
 
+    -- Hoxne Ampulla toggle set. The range slot is cleared so the Ampulla can equip.
+    sets.HoxneAmpulla = {
+        range=empty,
+        ammo="Hoxne Ampulla",
+    }
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -476,6 +494,8 @@ function midcast(spell)
         if spell.english == 'Aspir' or spell.english == 'Aspir II' or spell.english == 'Aspir III'
         or spell.english == 'Drain' or spell.english == 'Drain II' or spell.english == 'Drain III' then
             equip(sets.midcast.Aspir)
+        elseif MPRestoreNukeMode then
+            equip(sets.midcast.ElementalMPRestore)
         elseif MagicBurstMode then
             equip(sets.midcast.MagicBurst)
         else
@@ -557,6 +577,16 @@ end
 
 function self_command(command)
 
+    if command == 'toggle MPRestoreNukeMode' then
+        MPRestoreNukeMode = not MPRestoreNukeMode
+        if MPRestoreNukeMode then
+            add_to_chat(122, 'MP Restore Nuke Mode: ON')
+        else
+            add_to_chat(122, 'MP Restore Nuke Mode: OFF')
+        end
+        return
+    end
+
     if command == 'toggle DefenseMode' then
         DefenseMode = not DefenseMode
         if DefenseMode then
@@ -578,6 +608,22 @@ function self_command(command)
         return
     end
 
+    if command == 'toggle HoxneAmpullaMode' then
+        HoxneAmpullaMode = not HoxneAmpullaMode
+
+        if HoxneAmpullaMode then
+            enable('range', 'ammo')
+            equip(sets.HoxneAmpulla)
+            disable('range', 'ammo')
+            add_to_chat(122, 'Hoxne Ampulla: ON - Range/Ammo locked')
+        else
+            enable('range', 'ammo')
+            add_to_chat(122, 'Hoxne Ampulla: OFF - Normal gear swaps restored')
+            idle_check()
+        end
+        return
+    end
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -585,6 +631,8 @@ end
 -------------------------------------------------------------------------------------------------------------------
 
 function file_unload()
+    send_command('unbind numpad1')
     send_command('unbind numpad5')
     send_command('unbind numpad7')
+    send_command('unbind numpad9')
 end

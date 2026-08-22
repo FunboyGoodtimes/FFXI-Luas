@@ -9,10 +9,12 @@
 -- WAR.lua
 -- Numpad 1-4 = Weapon Sets
 -- Numpad 5   = TP/Defense Toggle
+-- Numpad 9   = Hoxne Ampulla Toggle
 --========================================================--
 
 WeaponMode = 1
 ArmorMode = "TP"
+hoxne_locked = false
 
 function get_sets()
 
@@ -120,7 +122,7 @@ sets.precast.JA.Default,{
     hands="Pumm. Mufflers +3",
     legs={ name="Souv. Diechlings +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
     feet={ name="Souveran Schuhs +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
-    neck="Moonbeam Necklace",
+    neck="Moonlight Necklace",
     waist="Null Belt",
     left_ear="Friomisi Earring",
     right_ear={ name="Boii Earring +1", augments={'System: 1 ID: 1676 Val: 0','Accuracy+14','Mag. Acc.+14','Crit.hit rate+5',}},
@@ -164,7 +166,7 @@ ammo="Thr. Tomahawk",
     neck={ name="War. Beads +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
     left_ear="Moonshade Earring",
-    right_ear="Schere Earring",
+    right_ear="Thrud Earring",
     left_ring="Ephramad's Ring",
     right_ring="Niqmaddu Ring",
     back={ name="Cichol's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}},
@@ -192,7 +194,7 @@ ammo="Thr. Tomahawk",
     neck={ name="War. Beads +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
     left_ear="Moonshade Earring",
-    right_ear="Schere Earring",
+    right_ear="Thrud Earring",
     left_ring="Ephramad's Ring",
     right_ring="Niqmaddu Ring",
     back={ name="Cichol's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}},
@@ -333,6 +335,28 @@ function self_command(cmd)
         equip_current_set()
         add_to_chat(122,'Weapon Set 4')
 
+    elseif cmd == 'hoxne' then
+
+        -- Numpad 9 toggles Hoxne Ampulla ON/OFF.
+        if not hoxne_locked then
+
+            enable('ammo')
+            equip({ammo="Hoxne Ampulla"})
+            disable('ammo')
+            hoxne_locked = true
+
+            add_to_chat(122,'Hoxne Ampulla: ON - AMMO LOCKED')
+            send_command('wait 5; input /item "Hoxne Ampulla" <me>')
+
+        else
+
+            enable('ammo')
+            hoxne_locked = false
+            add_to_chat(122,'Hoxne Ampulla: OFF - AMMO UNLOCKED')
+            equip_current_set()
+
+        end
+
     elseif cmd == 'togglearmor' then
 
         if ArmorMode == 'TP' then
@@ -359,6 +383,7 @@ function bind_keys()
     send_command('bind numpad3 gs c weapon3')
     send_command('bind numpad4 gs c weapon4')
     send_command('bind numpad5 gs c togglearmor')
+    send_command('bind numpad9 gs c hoxne')
 
 end
 
@@ -373,5 +398,6 @@ function file_unload()
     send_command('unbind numpad3')
     send_command('unbind numpad4')
     send_command('unbind numpad5')
+    send_command('unbind numpad9')
 
 end

@@ -28,7 +28,8 @@ end
 
 function job_setup()
     state.ArmorMode = M{['description']='Armor Mode', 'TP', 'Defense'}
-    state.MainWeapon = M{'Twashtar','Tauret','Aeneas','Karambit'}
+    state.MainWeapon = M{'Twashtar','Aeneas'}
+    karambit_mode = false
     state.Offhand = M{'Crepuscular Knife','Fusetto +2'}
 
     -- Prevents Presto automation from repeatedly trying to fire.
@@ -38,7 +39,7 @@ end
 function user_setup()
     send_command('bind numpad1 gs c cycle MainWeapon')
     send_command('bind numpad2 gs c cycle Offhand')
-    send_command('bind numpad3 gs c set MainWeapon Karambit')
+    send_command('bind numpad3 gs c karambit')
     send_command('bind numpad5 gs c cycle ArmorMode')
 
     select_default_macro_book()
@@ -79,11 +80,11 @@ function init_gear_sets()
     -- General Waltz set.
     sets.precast.Waltz = {
     ammo="Yamarang",
-    head="Etoile Tiara",
-    body="Dancer's Casaque",
+    head="Horos Tiara",
+    body="Maxixi Casaque +1",
     hands="Nyame Gauntlets",
     legs="Dashing Subligar",
-    feet="Nyame Sollerets",
+    feet="Maxixi Toe Shoes +1",
     neck={ name="Etoile Gorget +2", augments={'Path: A',}},
     waist="Aristo Belt",
     left_ear="Roundel Earring",
@@ -96,11 +97,11 @@ function init_gear_sets()
     -- Healing Waltz set.
     sets.precast.Waltz['Healing Waltz'] = {
     ammo="Yamarang",
-    head="Etoile Tiara",
-    body="Dancer's Casaque",
+    head="Horos Tiara",
+    body="Maxixi Casaque +1",
     hands="Nyame Gauntlets",
     legs="Dashing Subligar",
-    feet="Nyame Sollerets",
+    feet="Maxixi Toe Shoes +1",
     neck={ name="Etoile Gorget +2", augments={'Path: A',}},
     waist="Aristo Belt",
     left_ear="Roundel Earring",
@@ -265,18 +266,19 @@ function init_gear_sets()
     -- IDLE
     --========================================================--
     sets.idle = {
-        ammo="Staunch Tathlum",
+    ammo="Staunch Tathlum",
     head="Null Masque",
-    body="Malignance Tabard",
-    hands="Malignance Gloves",
-    legs="Malignance Tights",
-    feet="Malignance Boots",
+    body="Gleti's Cuirass",
+    hands="Gleti's Gauntlets",
+    legs="Gleti's Breeches",
+    feet="Gleti's Boots",
     neck="Elite Royal Collar",
     waist="Null Belt",
     left_ear="Odnowa Earring +1",
     right_ear="Balder Earring",
     left_ring="Warp Ring",
     right_ring="Shneddick Ring",
+    back={ name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Dbl.Atk."+10',}},
     }
 
     --========================================================--
@@ -383,10 +385,19 @@ function customize_melee_set(meleeSet)
         meleeSet = set_combine(meleeSet, sets.engaged.Defense)
     end
     meleeSet = set_combine(meleeSet,{
-        main=state.MainWeapon.value,
+        main=(karambit_mode and 'Karambit' or state.MainWeapon.value),
         sub=state.Offhand.value,
     })
     return meleeSet
+end
+
+-- Keep the selected weapons equipped while idle too.
+function customize_idle_set(idleSet)
+    idleSet = set_combine(idleSet,{
+        main=(karambit_mode and 'Karambit' or state.MainWeapon.value),
+        sub=state.Offhand.value,
+    })
+    return idleSet
 end
 
 function job_state_change(stateField, newValue, oldValue)
@@ -399,11 +410,26 @@ function job_state_change(stateField, newValue, oldValue)
 
         handle_equipping_gear(player.status)
     elseif stateField == 'MainWeapon' then
+        -- NumPad 1 always returns to the Twashtar/Aeneas cycle.
+        karambit_mode = false
         add_to_chat(122,'Main Weapon: '..newValue)
         handle_equipping_gear(player.status)
     elseif stateField == 'Offhand' then
         add_to_chat(122,'Offhand: '..newValue)
         handle_equipping_gear(player.status)
+    end
+end
+
+
+--========================================================--
+-- KARAMBIT MODE
+--========================================================--
+function job_self_command(cmdParams, eventArgs)
+    if cmdParams[1] and cmdParams[1]:lower() == 'karambit' then
+        karambit_mode = true
+        add_to_chat(122, 'Main Weapon: Karambit')
+        handle_equipping_gear(player.status)
+        eventArgs.handled = true
     end
 end
 

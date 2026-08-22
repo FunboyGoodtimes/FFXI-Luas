@@ -12,11 +12,14 @@
     Built as a clean, easy-to-edit template.
 
     Keybinds:
-      NumPad 1: Cycle weapon modes
+      NumPad 1: Cycle weapon modes (Burtgang / Naegling / Excalibur)
       NumPad 2: Toggle TP / Defense armor mode
       NumPad 3: Toggle DPS mode
-      NumPad 9: Cycle automation modes
-      NumPad 0: Reset weapon, armor, DPS, and automation modes
+      NumPad 4: Toggle Magic DEF mode
+      NumPad 5: Toggle Duban / Aegis
+      NumPad 7: Toggle Phalanx gear mode
+      NumPad 9: Toggle Auto Majesty on / off
+      NumPad 0: Reset all modes
 
     Edit the gear inside init_gear_sets().
     Startup settings are near the top of user_setup().
@@ -32,7 +35,8 @@ end
 function job_setup()
     state.WeaponMode = M{['description']='Weapon Mode',
         'Burtgang',
-        'Naegling'
+        'Naegling',
+        'Excalibur'
     }
 
     state.ArmorMode = M{['description']='Armor Mode',
@@ -45,11 +49,24 @@ function job_setup()
         'On'
     }
 
+    state.ShieldMode = M{['description']='Shield Mode',
+        'Duban',
+        'Aegis'
+    }
+
+    state.MagicDefMode = M{['description']='Magic DEF Mode',
+        'Off',
+        'On'
+    }
+
+    state.PhalanxGearMode = M{['description']='Phalanx Gear Mode',
+        'Off',
+        'On'
+    }
+
     state.AutoMode = M{['description']='Automation Mode',
         'Off',
-        'Majesty',
-        'Majesty + Reprisal',
-        'Everything'
+        'Majesty'
     }
 
     phalanx_spells = S{'Phalanx', 'Phalanx II'}
@@ -64,6 +81,9 @@ function user_setup()
     send_command('bind numpad1 gs c cycle WeaponMode')
     send_command('bind numpad2 gs c cycle ArmorMode')
     send_command('bind numpad3 gs c cycle DPSMode')
+    send_command('bind numpad4 gs c cycle MagicDefMode')
+    send_command('bind numpad5 gs c cycle ShieldMode')
+    send_command('bind numpad7 gs c cycle PhalanxGearMode')
     send_command('bind numpad9 gs c cycle AutoMode')
     send_command('bind numpad0 gs c reset_modes')
 
@@ -74,6 +94,9 @@ function user_unload()
     send_command('unbind numpad1')
     send_command('unbind numpad2')
     send_command('unbind numpad3')
+    send_command('unbind numpad4')
+    send_command('unbind numpad5')
+    send_command('unbind numpad7')
     send_command('unbind numpad9')
     send_command('unbind numpad0')
 end
@@ -88,12 +111,19 @@ function init_gear_sets()
 
     sets.weapons.Burtgang = {
         main="Burtgang",
-        sub="Duban",
     }
 
     sets.weapons.Naegling = {
         main="Naegling",
-        sub="Duban",
+    }
+
+    sets.weapons.Excalibur = {
+        main="Excalibur",
+    }
+
+    sets.shields = {
+        Duban = { sub="Duban" },
+        Aegis = { sub="Aegis" },
     }
     -------------------------------------------------------------------------
     -- PRECAST
@@ -106,7 +136,7 @@ function init_gear_sets()
     hands={ name="Leyline Gloves", augments={'Accuracy+12','Mag. Acc.+14','"Mag.Atk.Bns."+15','"Fast Cast"+2',}},
     legs="Enif Cosciales",
     feet="Chev. Sabatons +3",
-    neck="Moonbeam Necklace",
+    neck="Moonlight Necklace",
     waist="Plat. Mog. Belt",
     left_ear="Enchntr. Earring +1",
     right_ear="Etiolation Earring",
@@ -199,13 +229,21 @@ function init_gear_sets()
     back="Alabaster Mantle",
     })
 
-    sets.precast.WS['Atonement'] = set_combine(sets.precast.WS, {
-        -- Atonement benefits heavily from enmity generation before use.
-        neck="Unmoving Collar +1",
-        waist="Creed Baudrier",
-        left_ring="Apeile Ring +1",
-        right_ring="Supershear Ring",
-    })
+    sets.precast.WS['Atonement'] = {
+        ammo="Oshasha's Treatise",
+        head={ name="Souv. Schaller +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+        body={ name="Souv. Cuirass +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+        hands={ name="Souv. Handsch. +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+        legs={ name="Souv. Diechlings +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+        feet={ name="Souveran Schuhs +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
+        neck="Moonlight Necklace",
+        waist="Fotia Belt",
+        left_ear="Friomisi Earring",
+        right_ear="Moonshade Earring",
+        left_ring="Eihwaz Ring",
+        right_ring="Vexer Ring +1",
+        back={ name="Rudianos's Mantle", augments={'HP+60','Eva.+20 /Mag. Eva.+20','HP+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
+    }
 
     sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {
         neck="Fotia Gorget",
@@ -225,7 +263,7 @@ function init_gear_sets()
     hands={ name="Souv. Handsch. +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
     legs={ name="Souv. Diechlings +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
     feet={ name="Souveran Schuhs +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
-    neck="Moonbeam Necklace",
+    neck="Moonlight Necklace",
     waist="Plat. Mog. Belt",
     left_ear="Friomisi Earring",
     right_ear="Alabaster Earring",
@@ -243,7 +281,7 @@ function init_gear_sets()
     hands={ name="Souv. Handsch. +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
     legs={ name="Founder's Hose", augments={'MND+5','Attack+2',}},
     feet={ name="Souveran Schuhs +1", augments={'HP+105','Enmity+9','Potency of "Cure" effect received +15%',}},
-    neck="Moonbeam Necklace",
+    neck="Moonlight Necklace",
     waist="Plat. Mog. Belt",
     left_ear="Enchntr. Earring +1",
     right_ear="Knightly Earring",
@@ -302,7 +340,7 @@ function init_gear_sets()
     hands={ name="Yorium Gauntlets", augments={'Spell interruption rate down -10%',}},
     legs={ name="Founder's Hose", augments={'MND+5','Attack+2',}},
     feet={ name="Yorium Sabatons", augments={'Spell interruption rate down -10%',}},
-    neck="Moonbeam Necklace",
+    neck="Moonlight Necklace",
     waist="Hachirin-no-Obi",
     left_ear="Knightly Earring",
     right_ear="Alabaster Earring",
@@ -365,17 +403,36 @@ left_ring  = {name="Moonlight Ring", bag="wardrobe1"},
     sets.engaged.Defense = {
     ammo="Staunch Tathlum",
     head="Chev. Armet +3",
-    body="Chev. Cuirass +3",
-    hands="Chev. Gauntlets +2",
+    body="Sakpata's Plate",
+    hands="Sakpata's Gauntlets",
     legs="Chev. Cuisses +3",
-    feet="Chev. Sabatons +3",
+    feet="Sakpata's Leggings",
     neck="Elite Royal Collar",
     waist="Plat. Mog. Belt",
     left_ear="Odnowa Earring +1",
     right_ear="Alabaster Earring",
-left_ring  = {name="Moonlight Ring", bag="wardrobe1"},
-right_ring = {name="Moonlight Ring", bag="wardrobe2"},
-    back={ name="Rudianos's Mantle", augments={'HP+60','Eva.+20 /Mag. Eva.+20','HP+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
+    left_ring="Murky Ring",
+    right_ring="Shadow Ring",
+    back="Shadow Mantle",
+    }
+
+    -- NumPad 4 toggles this full Magic DEF set on and off.
+    sets.engaged.MagicDef = {
+        main="Burtgang",
+        sub="Aegis",
+        ammo="Vanir Battery",
+        head="Sakpata's Helm",
+        body="Sakpata's Plate",
+        hands="Sakpata's Gauntlets",
+        legs="Sakpata's Cuisses",
+        feet="Sakpata's Leggings",
+        neck="Coatl Gorget +1",
+        waist="Null Belt",
+        left_ear="Odnowa Earring +1",
+        right_ear="Alabaster Earring",
+        left_ring="Shadow Ring",
+        right_ring="Vexer Ring +1",
+        back={ name="Rudianos's Mantle", augments={'HP+60','Eva.+20 /Mag. Eva.+20','HP+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
     }
 
     -- NumPad 3 toggles this full DPS set on and off.
@@ -399,6 +456,18 @@ right_ring = {name="Moonlight Ring", bag="wardrobe2"},
 end
 
 function job_precast(spell, action, spellMap, eventArgs)
+    -- Automatically use Divine Emblem before Flash when the ability is ready.
+    -- The repeated Flash command will pass through normally once Divine Emblem is active.
+    if spell.english == 'Flash' and not buffactive['Divine Emblem'] then
+        local remaining = ability_recast_remaining('Divine Emblem')
+        if remaining == 0 then
+            local target = (spell.target and spell.target.raw) or '<t>'
+            cancel_spell()
+            send_command('input /ja "Divine Emblem" <me>; wait 1; input /ma "Flash" '..target)
+            return
+        end
+    end
+
     if spell.skill == 'Blue Magic' then
         equip(sets.precast.FC)
     elseif spell.action_type == 'Magic' and spell.skill == 'Healing Magic' then
@@ -426,21 +495,12 @@ end
 
 
 -- =========================================================================
--- AUTOMATION
--- NumPad 9 cycles: Off > Majesty > Majesty + Reprisal > Everything
--- "Everything" currently maintains Majesty and Reprisal and is ready for
--- additional buffs later.
+-- AUTO MAJESTY
+-- NumPad 9 toggles Auto Majesty: Off <-> On
 -- =========================================================================
 
 function auto_uses_majesty()
     return state.AutoMode.value == 'Majesty'
-        or state.AutoMode.value == 'Majesty + Reprisal'
-        or state.AutoMode.value == 'Everything'
-end
-
-function auto_uses_reprisal()
-    return state.AutoMode.value == 'Majesty + Reprisal'
-        or state.AutoMode.value == 'Everything'
 end
 
 function ability_recast_remaining(ability_name)
@@ -451,16 +511,6 @@ function ability_recast_remaining(ability_name)
 
     local recasts = windower.ffxi.get_ability_recasts()
     return recasts[ability.recast_id] or 0
-end
-
-function spell_recast_remaining(spell_name)
-    local spell = res.spells:with('en', spell_name)
-    if not spell or spell.recast_id == nil then
-        return 999
-    end
-
-    local recasts = windower.ffxi.get_spell_recasts()
-    return recasts[spell.recast_id] or 0
 end
 
 function schedule_auto_check(delay)
@@ -483,22 +533,10 @@ function run_automation()
         return
     end
 
-    -- Majesty has priority over Reprisal.
     if auto_uses_majesty() and not buffactive['Majesty'] then
         local remaining = ability_recast_remaining('Majesty')
         if remaining == 0 then
             send_command('input /ja "Majesty" <me>')
-            schedule_auto_check(4)
-        else
-            schedule_auto_check(math.max(3, math.min(remaining + 1, 15)))
-        end
-        return
-    end
-
-    if auto_uses_reprisal() and not buffactive['Reprisal'] then
-        local remaining = spell_recast_remaining('Reprisal')
-        if remaining == 0 then
-            send_command('input /ma "Reprisal" <me>')
             schedule_auto_check(4)
         else
             schedule_auto_check(math.max(3, math.min(remaining + 1, 15)))
@@ -516,7 +554,7 @@ function job_aftercast(spell, action, spellMap, eventArgs)
 end
 
 function job_buff_change(buff, gain)
-    if (buff == 'Majesty' or buff == 'Reprisal') and not gain then
+    if buff == 'Majesty' and not gain then
         schedule_auto_check(2)
     end
 end
@@ -527,16 +565,26 @@ function job_status_change(newStatus, oldStatus, eventArgs)
 end
 
 function customize_idle_set(idleSet)
-    if state.DPSMode.value == 'On' then
-        return sets.engaged.DPS
+    if state.PhalanxGearMode.value == 'On' then
+        return sets.midcast.Phalanx
+    elseif state.MagicDefMode.value == 'On' then
+        return sets.engaged.MagicDef
+    elseif state.DPSMode.value == 'On' then
+        return set_combine(sets.engaged.DPS, sets.shields[state.ShieldMode.value])
+    elseif state.ArmorMode.value == 'Defense' then
+        return set_combine(sets.engaged.Defense, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value])
     end
 
-    return set_combine(idleSet, sets.weapons[state.WeaponMode.value])
+    return set_combine(idleSet, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value])
 end
 
 function customize_melee_set(meleeSet)
-    if state.DPSMode.value == 'On' then
-        return sets.engaged.DPS
+    if state.PhalanxGearMode.value == 'On' then
+        return sets.midcast.Phalanx
+    elseif state.MagicDefMode.value == 'On' then
+        return sets.engaged.MagicDef
+    elseif state.DPSMode.value == 'On' then
+        return set_combine(sets.engaged.DPS, sets.shields[state.ShieldMode.value])
     end
 
     local selectedSet = meleeSet
@@ -545,7 +593,7 @@ function customize_melee_set(meleeSet)
         selectedSet = sets.engaged.Defense
     end
 
-    return set_combine(selectedSet, sets.weapons[state.WeaponMode.value])
+    return set_combine(selectedSet, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value])
 end
 
 function job_state_change(stateField, newValue, oldValue)
@@ -558,8 +606,35 @@ function job_state_change(stateField, newValue, oldValue)
     elseif stateField == 'DPS Mode' then
         add_to_chat(122, 'DPS Mode: '..newValue)
         equip_current_mode()
+    elseif stateField == 'Shield Mode' then
+        add_to_chat(122, 'Shield Mode: '..newValue)
+        equip_current_mode()
+    elseif stateField == 'Magic DEF Mode' then
+        if newValue == 'On' then
+            if state.PhalanxGearMode.value == 'On' then
+                state.PhalanxGearMode:set('Off')
+            end
+            add_to_chat(122, 'Magic DEF Mode: ON')
+        else
+            add_to_chat(122, 'Magic DEF Mode: OFF')
+        end
+        equip_current_mode()
+    elseif stateField == 'Phalanx Gear Mode' then
+        if newValue == 'On' then
+            if state.MagicDefMode.value == 'On' then
+                state.MagicDefMode:set('Off')
+            end
+            add_to_chat(122, 'Phalanx Gear Mode: ON')
+        else
+            add_to_chat(122, 'Phalanx Gear Mode: OFF')
+        end
+        equip_current_mode()
     elseif stateField == 'Automation Mode' then
-        add_to_chat(122, 'Automation: '..newValue)
+        if newValue == 'Majesty' then
+            add_to_chat(122, 'Auto Majesty: ON')
+        else
+            add_to_chat(122, 'Auto Majesty: OFF')
+        end
         auto_check_scheduled = false
         schedule_auto_check(1)
     end
@@ -574,25 +649,36 @@ function job_self_command(cmdParams, eventArgs)
         state.WeaponMode:set('Burtgang')
         state.ArmorMode:set('TP')
         state.DPSMode:set('Off')
+        state.ShieldMode:set('Duban')
+        state.MagicDefMode:set('Off')
+        state.PhalanxGearMode:set('Off')
         state.AutoMode:set('Off')
         auto_check_scheduled = false
-        add_to_chat(122, 'PLD modes reset: Burtgang / TP / DPS Off / Automation Off')
+        add_to_chat(122, 'PLD modes reset: Burtgang / TP / DPS Off / Duban / Magic DEF Off / Phalanx Gear Off / Auto Majesty Off')
         equip_current_mode()
         eventArgs.handled = true
     end
 end
 
 function equip_current_mode()
-    if state.DPSMode.value == 'On' then
-        equip(sets.engaged.DPS)
+    if state.PhalanxGearMode.value == 'On' then
+        equip(sets.midcast.Phalanx)
+    elseif state.MagicDefMode.value == 'On' then
+        equip(sets.engaged.MagicDef)
+    elseif state.DPSMode.value == 'On' then
+        equip(set_combine(sets.engaged.DPS, sets.shields[state.ShieldMode.value]))
     elseif player.status == 'Engaged' then
         if state.ArmorMode.value == 'Defense' then
-            equip(set_combine(sets.engaged.Defense, sets.weapons[state.WeaponMode.value]))
+            equip(set_combine(sets.engaged.Defense, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value]))
         else
-            equip(set_combine(sets.engaged, sets.weapons[state.WeaponMode.value]))
+            equip(set_combine(sets.engaged, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value]))
         end
     else
-        equip(set_combine(sets.idle, sets.weapons[state.WeaponMode.value]))
+        if state.ArmorMode.value == 'Defense' then
+            equip(set_combine(sets.engaged.Defense, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value]))
+        else
+            equip(set_combine(sets.idle, sets.weapons[state.WeaponMode.value], sets.shields[state.ShieldMode.value]))
+        end
     end
 end
 

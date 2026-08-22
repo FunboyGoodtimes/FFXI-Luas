@@ -22,6 +22,7 @@
 mainhand_mode = 'Naegling'
 offhand_mode = 'Crepuscular Knife'
 defense_mode = false
+hoxne_lock = false
 
 mainhand_order = {'Naegling', 'Twashtar', 'Carnwenhan'}
 offhand_order = {'Crepuscular Knife', 'Fusetto +2', 'Genmei Shield'}
@@ -327,6 +328,7 @@ include('CastStill.lua')
     windower.send_command('unbind numpad3; bind numpad3 gs c toggledefense')
     windower.send_command('unbind numpad4; bind numpad4 gs c sing4')
     windower.send_command('unbind numpad7; bind numpad7 gs c pianissimo')
+    windower.send_command('unbind numpad9; bind numpad9 gs c togglehoxne')
 
     -- Apply lockstyle and set macro book/page when this Lua loads.
     set_startup_style_and_macros()
@@ -523,6 +525,26 @@ function self_command(cmd)
         return
     end
 
+    if cmd == 'togglehoxne' then
+        hoxne_lock = not hoxne_lock
+
+        if hoxne_lock then
+            -- BRD constantly swaps instruments in the range slot.
+            -- Lock BOTH range and ammo so Hoxne Ampulla cannot be knocked off.
+            enable('range', 'ammo')
+            equip({ammo='Hoxne Ampulla'})
+            disable('range', 'ammo')
+
+            add_to_chat(158, 'Hoxne Ampulla: ON - RANGE/AMMO LOCKED')
+            send_command('wait 5; input /item "Hoxne Ampulla" <me>')
+        else
+            enable('range', 'ammo')
+            add_to_chat(122, 'Hoxne Ampulla: OFF - Normal instrument/ammo swaps restored')
+            equip_current_status_set()
+        end
+        return
+    end
+
     if cmd == 'toggledefense' then
         defense_mode = not defense_mode
 
@@ -547,4 +569,6 @@ function file_unload()
     windower.send_command('unbind numpad3')
     windower.send_command('unbind numpad4')
     windower.send_command('unbind numpad7')
+    windower.send_command('unbind numpad9')
+    enable('range', 'ammo')
 end

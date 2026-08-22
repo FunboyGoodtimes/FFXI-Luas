@@ -8,8 +8,8 @@
 
 --============================================================--
 --                    WHM GearSwap Lua                        --
---   Simple setup: Idle, Fast Cast, Cure, Curaga, Enhancing,  --
---   Regen, Barspells, Enfeebling, and Impact                 --
+--   Idle, Fast Cast, Cure, Curaga, Enhancing, Regen,        --
+--   Barspells, Enfeebling, MB, Melee, and Weapon Skills      --
 --============================================================--
 
 function get_sets()
@@ -41,9 +41,51 @@ function initialize()
     }
 
     --========================================================--
-    -- Fast Cast Set
+    -- Engaged Melee Set
+    --========================================================--
+    sets.engaged = {
+        main="Tishtrya",
+        sub="Genmei Shield",
+        ammo="Oshasha's Treatise",
+        head="Bunzi's Hat",
+        body="Nyame Mail",
+        hands="Nyame Gauntlets",
+        legs="Nyame Flanchard",
+        feet="Nyame Sollerets",
+        neck="Null Loop",
+        waist="Windbuffet Belt +1",
+        left_ear="Crep. Earring",
+        right_ear="Cessance Earring",
+        left_ring="Chirich Ring +1",
+        right_ring="Chirich Ring",
+        back="Null Shawl",
+    }
+
+    --========================================================--
+    -- Weapon Skill Set
     --========================================================--
     sets.precast = {}
+    sets.precast.WS = {
+        main="Tishtrya",
+        sub="Genmei Shield",
+        ammo="Oshasha's Treatise",
+        head="Nyame Helm",
+        body="Nyame Mail",
+        hands="Nyame Gauntlets",
+        legs="Nyame Flanchard",
+        feet="Nyame Sollerets",
+        neck="Rep. Plat. Medal",
+        waist="Fotia Belt",
+        left_ear="Crep. Earring",
+        right_ear="Cessance Earring",
+        left_ring="Ephramad's Ring",
+        right_ring="Epaminondas's Ring",
+        back="Alabaster Mantle",
+    }
+
+    --========================================================--
+    -- Fast Cast Set
+    --========================================================--
     sets.precast.FC = {
     main="C. Palug Hammer",
     sub="Sors Shield",
@@ -177,6 +219,25 @@ function initialize()
         -- Add the rest of your Impact gear here
     }
 
+    -- Holy, Holy II, Banish, Banish II, and Banish III Magic Burst set.
+    sets.midcast.MagicBurst = {
+        main="Bunzi's Rod",
+        sub="Ammurapi Shield",
+        ammo="Ghastly Tathlum +1",
+        head="Bunzi's Hat",
+        body="Bunzi's Robe",
+        hands="Bunzi's Gloves",
+        legs="Bunzi's Pants",
+        feet="Bunzi's Sabots",
+        neck="Mizu. Kubikazari",
+        waist="Sacro Cord",
+        left_ear="Malignance Earring",
+        right_ear="Regal Earring",
+        left_ring="Shiva Ring +1",
+        right_ring="Freke Ring",
+        back="Null Shawl",
+    }
+
     --========================================================--
     -- Startup Settings
     -- Change these numbers to your preferred macro book/page
@@ -184,6 +245,7 @@ function initialize()
     --========================================================--
     send_command('wait 2; input /macro book 1; input /macro set 10')
     send_command('wait 4; input /lockstyleset 12')
+    send_command('bind numpad9 gs c whm_buffs')
 
     equip(sets.idle)
 end
@@ -192,7 +254,10 @@ end
 -- Precast
 --============================================================--
 function precast(spell)
-    if spell.action_type == 'Magic' then
+    if spell.type == 'WeaponSkill' then
+        equip(sets.precast.WS)
+
+    elseif spell.action_type == 'Magic' then
         if spell.english == 'Impact' then
             equip(sets.precast.Impact)
         else
@@ -207,6 +272,11 @@ end
 function midcast(spell)
     if spell.english == 'Impact' then
         equip(sets.midcast.Impact)
+
+    elseif spell.english == 'Holy' or spell.english == 'Holy II'
+        or spell.english == 'Banish' or spell.english == 'Banish II'
+        or spell.english == 'Banish III' then
+        equip(sets.midcast.MagicBurst)
 
     elseif spell.english:startswith('Curaga') or spell.english == 'Curagara' then
         equip(sets.midcast.Curaga)
@@ -235,16 +305,25 @@ end
 -- Aftercast
 --============================================================--
 function aftercast(spell)
-    equip(sets.idle)
-    check_buffs()
+    equip_current_status()
 end
 
 --============================================================--
 -- Status Change
 --============================================================--
 function status_change(new, old)
-    equip(sets.idle)
-    check_buffs()
+    equip_current_status()
+end
+
+--============================================================--
+-- Equip Idle or Engaged Set
+--============================================================--
+function equip_current_status()
+    if player.status == 'Engaged' then
+        equip(sets.engaged)
+    else
+        equip(sets.idle)
+    end
 end
 
 --============================================================--
@@ -256,35 +335,27 @@ end
 
 
 --============================================================--
--- Auto Light Arts / Afflatus Solace
+-- NumPad 9: Light Arts / Afflatus Solace
 --============================================================--
-auto_ja_busy = false
-
-function check_buffs()
-    if auto_ja_busy then return end
-    if player.status ~= 'Idle' then return end
-    if midaction() then return end
-
-    if not buffactive['Light Arts'] then
-        auto_ja_busy = true
-        send_command('input /ja "Light Arts" <me>; wait 3; gs c reset_autoja')
-        return
-    end
-
-    -- Only attempt Solace after Light Arts is active.
-    if buffactive['Light Arts'] and not buffactive['Afflatus Solace'] and not buffactive['Afflatus Misery'] then
-        auto_ja_busy = true
-        send_command('input /ja "Afflatus Solace" <me>; wait 3; gs c reset_autoja')
-    end
-end
-
 function self_command(cmd)
-    if cmd == 'reset_autoja' then
-        auto_ja_busy = false
-        check_buffs()
+    if cmd == 'whm_buffs' then
+        if not buffactive['Light Arts'] then
+            add_to_chat(122, 'NumPad 9: Activating Light Arts, then Afflatus Solace.')
+            send_command('input /ja "Light Arts" <me>; wait 3; input /ja "Afflatus Solace" <me>')
+
+        elseif not buffactive['Afflatus Solace'] then
+            add_to_chat(122, 'NumPad 9: Activating Afflatus Solace.')
+            send_command('input /ja "Afflatus Solace" <me>')
+
+        else
+            add_to_chat(122, 'Light Arts and Afflatus Solace are already active.')
+        end
     end
 end
 
+function file_unload()
+    send_command('unbind numpad9')
+end
 
 function string.endswith(self, value)
     return value == '' or self:sub(-#value) == value

@@ -11,16 +11,21 @@
     THF.lua
     Simple Thief GearSwap
     NumPad 1 toggles between Regular and Crit engaged modes.
+    NumPad 3 toggles Treasure Hunter mode on/off.
 --]]
 
 function get_sets()
     mote_include_version = 2
 
-    -- Current engaged mode.
+    -- Current modes.
     crit_mode = false
+    th_mode = false
 
     -- NumPad 1: Toggle Regular / Crit mode.
     send_command('bind numpad1 gs c toggle_crit')
+
+    -- NumPad 3: Toggle Treasure Hunter mode.
+    send_command('bind numpad3 gs c toggle_th')
 
     -----------------------------------------------------------------------
     -- IDLE SET
@@ -88,6 +93,20 @@ function get_sets()
         left_ring="Mummu Ring",
         right_ring="Shneddick Ring",
         back="Null Shawl",
+    }
+
+
+    -----------------------------------------------------------------------
+    -- TREASURE HUNTER SET
+    -----------------------------------------------------------------------
+    -- Add your Treasure Hunter gear here.
+    sets.TH = {
+    main="Plun. Knife",
+    sub="Plun. Knife",
+    ammo="Per. Lucky Egg",
+    head="Wh. Rarab Cap +1",
+    body="Malignance Tabard",
+    hands="Assassin's Armlets",
     }
 
     -----------------------------------------------------------------------
@@ -220,20 +239,12 @@ end
 
 
 function aftercast(spell)
-    if player.status == 'Engaged' then
-        equip_engaged_set()
-    else
-        equip(sets.idle)
-    end
+    equip_current_set()
 end
 
 
 function status_change(new_status, old_status)
-    if new_status == 'Engaged' then
-        equip_engaged_set()
-    else
-        equip(sets.idle)
-    end
+    equip_current_set()
 end
 
 
@@ -249,9 +260,29 @@ function self_command(command)
             windower.add_to_chat(122, 'Engaged Mode: REGULAR')
         end
 
-        if player.status == 'Engaged' then
-            equip_engaged_set()
+        equip_current_set()
+
+    elseif command == 'toggle_th' then
+        th_mode = not th_mode
+
+        if th_mode then
+            windower.add_to_chat(158, 'Treasure Hunter Mode: ON')
+        else
+            windower.add_to_chat(122, 'Treasure Hunter Mode: OFF')
         end
+
+        equip_current_set()
+    end
+end
+
+
+function equip_current_set()
+    if th_mode then
+        equip(sets.TH)
+    elseif player.status == 'Engaged' then
+        equip_engaged_set()
+    else
+        equip(sets.idle)
     end
 end
 
@@ -267,4 +298,5 @@ end
 
 function file_unload()
     send_command('unbind numpad1')
+    send_command('unbind numpad3')
 end

@@ -128,8 +128,8 @@ function initialize()
     waist="Hachirin-no-Obi",
     left_ear="Mendi. Earring",
     right_ear="Roundel Earring",
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Alaunus's Cape", augments={'"Fast Cast"+10','Damage taken-5%',}},
     }
 
@@ -146,8 +146,8 @@ function initialize()
     waist="Hachirin-no-Obi",
     left_ear="Mendi. Earring",
     right_ear="Roundel Earring",
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Alaunus's Cape", augments={'"Fast Cast"+10','Damage taken-5%',}},
     }
 
@@ -164,8 +164,8 @@ function initialize()
     waist="Embla Sash",
     left_ear="Etiolation Earring",
     right_ear="Regal Earring",
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Alaunus's Cape", augments={'"Fast Cast"+10','Damage taken-5%',}},
     }
 
@@ -186,8 +186,8 @@ function initialize()
     waist="Embla Sash",
     left_ear="Etiolation Earring",
     right_ear="Regal Earring",
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Alaunus's Cape", augments={'"Fast Cast"+10','Damage taken-5%',}},
     }
 

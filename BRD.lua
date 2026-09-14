@@ -4,6 +4,11 @@
 -- ██║╚██╔╝██║██║██╔═██╗ ██╔══╝     ██║   ██╔══██╗██║   ██║██║   ██║   ██║
 -- ██║ ╚═╝ ██║██║██║  ██╗███████╗   ██║   ██║  ██║╚██████╔╝╚██████╔╝   ██║
 -- ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚═╝
+
+
+
+
+
 ----------------------------------------------------------------------------
 -- BRD.lua
 -- Custom Bard GearSwap template built from uploaded gear export.
@@ -23,6 +28,9 @@ mainhand_mode = 'Naegling'
 offhand_mode = 'Crepuscular Knife'
 defense_mode = false
 hoxne_lock = false
+
+-- Allows the automatically retried Spectral Jig to pass through precast.
+local spectral_jig_retry = false
 
 mainhand_order = {'Naegling', 'Twashtar', 'Carnwenhan'}
 offhand_order = {'Crepuscular Knife', 'Fusetto +2', 'Genmei Shield'}
@@ -88,7 +96,6 @@ include('CastStill.lua')
 
     sets.precast.FC = {
     main="Carnwenhan",
-    sub={ name="Kali", augments={'MP+60','Mag. Acc.+20','"Refresh"+1',}},
     range="Gjallarhorn",
     head="Fili Calot +3",
     body="Inyanga Jubbah +2",
@@ -132,7 +139,6 @@ include('CastStill.lua')
 
     -- Absorb-TP midcast. Replace these placeholders with your preferred Dark Magic skill / Magic Accuracy gear.
     sets.midcast.AbsorbTP = {
-    main={ name="Kali", augments={'MP+60','Mag. Acc.+20','"Refresh"+1',}},
     sub="Ammurapi Shield",
     ammo="Impatiens",
     head="Bunzi's Hat",
@@ -163,8 +169,8 @@ include('CastStill.lua')
     waist="Null Belt",
     left_ear="Regal Earring",
     right_ear={ name="Fili Earring", augments={'System: 1 ID: 1676 Val: 0','Accuracy+8','Mag. Acc.+8',}},
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Intarabus's Cape", augments={'CHR+20','Accuracy+20 Attack+20','CHR+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
 }
 
@@ -182,8 +188,8 @@ include('CastStill.lua')
     waist="Null Belt",
     left_ear="Regal Earring",
     right_ear={ name="Fili Earring", augments={'System: 1 ID: 1676 Val: 0','Accuracy+8','Mag. Acc.+8',}},
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Intarabus's Cape", augments={'CHR+20','Accuracy+20 Attack+20','CHR+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
 }
 
@@ -219,8 +225,8 @@ include('CastStill.lua')
     waist="Null Belt",
     left_ear="Mendi. Earring",
     right_ear={ name="Fili Earring", augments={'System: 1 ID: 1676 Val: 0','Accuracy+8','Mag. Acc.+8',}},
-    left_ring={name="Stikini Ring +1", bag="wardrobe4"},
-    right_ring={name="Stikini Ring +1", bag="wardrobe"},
+    left_ring={name="Stikini Ring +1", bag="wardrobe6"},
+    right_ring={name="Stikini Ring +1", bag="wardrobe7"},
     back={ name="Intarabus's Cape", augments={'CHR+20','Accuracy+20 Attack+20','CHR+10','"Fast Cast"+10','Spell interruption rate down-10%',}},
 }
 
@@ -229,8 +235,6 @@ include('CastStill.lua')
     ------------------------------------------------------------
 
     sets.idle = {
-    main="Carnwenhan",
-    sub={ name="Kali", augments={'MP+60','Mag. Acc.+20','"Refresh"+1',}},
     head="Null Masque",
     body="Nyame Mail",
     hands="Nyame Gauntlets",
@@ -250,8 +254,6 @@ include('CastStill.lua')
     ------------------------------------------------------------
 
     sets.engaged = {
-    main="Carnwenhan",
-    sub={ name="Kali", augments={'MP+60','Mag. Acc.+20','"Refresh"+1',}},
     range="Linos",
     head="Bunzi's Hat",
     body="Perfection Plate.",
@@ -261,16 +263,13 @@ include('CastStill.lua')
     neck={ name="Bard's Charm +2", augments={'Path: A',}},
     waist="Sailfi Belt +1",
     left_ear="Telos Earring",
-    right_ear="Balder Earring",
-    left_ring={ name="Moonlight Ring", bag="wardrobe" },
-    right_ring={ name="Moonlight Ring", bag="wardrobe2" },
+    right_ear="Cessance Earring",
+    left_ring={ name="Moonlight Ring", bag="wardrobe6" },
+    right_ring={ name="Moonlight Ring", bag="wardrobe7" },
     back="Null Shawl",
     }
 
     sets.engaged.Defense = {
-    main="Carnwenhan",
-    sub={ name="Kali", augments={'MP+60','Mag. Acc.+20','"Refresh"+1',}},
-    range="Linos",
     head="Nyame Helm",
     body="Nyame Mail",
     hands="Nyame Gauntlets",
@@ -280,8 +279,8 @@ include('CastStill.lua')
     waist="Null Belt",
     left_ear="Odnowa Earring +1",
     right_ear="Eabani Earring",
-    left_ring={ name="Moonlight Ring", bag="wardrobe" },
-    right_ring={ name="Moonlight Ring", bag="wardrobe2" },
+    left_ring={ name="Moonlight Ring", bag="wardrobe6" },
+    right_ring={ name="Moonlight Ring", bag="wardrobe7" },
     back="Null Shawl",
     }
 
@@ -289,9 +288,8 @@ include('CastStill.lua')
     -- Weapon Skills
     ------------------------------------------------------------
 
-    sets.precast.WS = {    main="Carnwenhan",
-    sub={ name="Kali", augments={'MP+60','Mag. Acc.+20','"Refresh"+1',}},
-    ammo="Oshasha's Treatise",
+    sets.precast.WS = {
+    ammo="Coiste Bodhar",
     head="Nyame Helm",
     body="Nyame Mail",
     hands="Nyame Gauntlets",
@@ -301,13 +299,13 @@ include('CastStill.lua')
     waist="Fotia Belt",
     left_ear="Regal Earring",
     right_ear="Moonshade Earring",
-    left_ring={ name="Moonlight Ring", bag="wardrobe" },
-    right_ring={ name="Moonlight Ring", bag="wardrobe2" },
+    left_ring={ name="Moonlight Ring", bag="wardrobe6" },
+    right_ring={ name="Moonlight Ring", bag="wardrobe7" },
     back="Alabaster Mantle",
 }
 
     sets.precast.WS['Savage Blade'] = {
-    ammo="Oshasha's Treatise",
+    ammo="Coiste Bodhar",
     head="Nyame Helm",
     body="Nyame Mail",
     hands="Nyame Gauntlets",
@@ -322,11 +320,45 @@ include('CastStill.lua')
     back="Alabaster Mantle",
 }
 
+    -- Rudra's Storm: exact set from the uploaded export.
+    sets.precast.WS["Rudra's Storm"] = {
+    ammo="Coiste Bodhar",
+    head="Nyame Helm",
+    body="Nyame Mail",
+    hands="Nyame Gauntlets",
+    legs="Nyame Flanchard",
+    feet="Nyame Sollerets",
+    neck={ name="Bard's Charm +2", augments={'Path: A',}},
+    waist="Kentarch Belt +1",
+    left_ear="Moonshade Earring",
+    right_ear="Mache Earring +1",
+    left_ring="Epaminondas's Ring",
+    right_ring="Ephramad's Ring",
+    back="Alabaster Mantle",
+}
+
+    -- Mordant Rime: CHR/DEX-focused set using gear already present in this BRD Lua/export.
+    -- Carnwenhan is specified here so the WS can use its Mordant Rime damage bonus.
+    sets.precast.WS['Mordant Rime'] = {
+    ammo="Coiste Bodhar",
+    head="Nyame Helm",
+    body="Nyame Mail",
+    hands="Nyame Gauntlets",
+    legs="Nyame Flanchard",
+    feet="Nyame Sollerets",
+    neck={ name="Bard's Charm +2", augments={'Path: A',}},
+    waist="Sailfi Belt +1",
+    left_ear="Regal Earring",
+    right_ear="Mache Earring +1",
+    left_ring="Epaminondas's Ring",
+    right_ring="Ephramad's Ring",
+    back="Alabaster Mantle",
+}
+
     -- Bind weapon and defense controls.
     windower.send_command('unbind numpad1; bind numpad1 gs c togglemainhand')
     windower.send_command('unbind numpad2; bind numpad2 gs c toggleoffhand')
     windower.send_command('unbind numpad3; bind numpad3 gs c toggledefense')
-    windower.send_command('unbind numpad4; bind numpad4 gs c sing4')
     windower.send_command('unbind numpad7; bind numpad7 gs c pianissimo')
     windower.send_command('unbind numpad9; bind numpad9 gs c togglehoxne')
 
@@ -360,6 +392,10 @@ end
 
 function get_song_instrument(spell)
 
+    if spell.english == "Aria of Passion" then
+        return "Loughnashade"
+    end
+
     if spell.english == "Honor March" then
         return "Marsyas"
     end
@@ -381,6 +417,27 @@ end
 
 function precast(spell)
 
+    -- Cancel the first attempt, remove Sneak/Invisible, then retry after the
+    -- game client has had enough time to register the cancelled buffs.
+    if spell.english == 'Spectral Jig' then
+        if spectral_jig_retry then
+            spectral_jig_retry = false
+        elseif buffactive and (buffactive['Sneak'] or buffactive['Invisible']) then
+            cancel_spell()
+
+            if buffactive['Sneak'] then
+                windower.ffxi.cancel_buff(71)
+            end
+            if buffactive['Invisible'] then
+                windower.ffxi.cancel_buff(69)
+            end
+
+            spectral_jig_retry = true
+            send_command('wait 1; input /ja "Spectral Jig" <me>')
+            return
+        end
+    end
+
     -- If silence is preventing magic, use Echo Drops automatically and cancel the blocked cast.
     if spell.action_type == 'Magic' and buffactive and buffactive['Silence'] then
         cancel_spell()
@@ -401,10 +458,20 @@ function precast(spell)
         local wsset = sets.precast.WS[spell.english]
         if wsset then
             equip(set_combine(sets.precast.WS, wsset))
+
+            -- A named WS set can specify its own main/sub weapons.
+            -- Preserve selected weapon-mode slots only when that WS set does not override them.
+            if not wsset.main and not wsset.sub then
+                equip_current_weapon()
+            elseif not wsset.main then
+                equip({main=mainhand_mode})
+            elseif not wsset.sub then
+                equip({sub=offhand_mode})
+            end
         else
             equip(sets.precast.WS)
+            equip_current_weapon()
         end
-        equip_current_weapon()
         return
     end
 
@@ -416,8 +483,10 @@ function precast(spell)
         if spell.type == 'BardSong' then
             equip_song_weapons()
 
-            -- Honor March requires Marsyas to already be equipped when casting starts.
-            if spell.english == "Honor March" then
+            -- Unique songs need their required instruments equipped when casting starts.
+            if spell.english == "Aria of Passion" then
+                equip({range="Loughnashade"})
+            elseif spell.english == "Honor March" then
                 equip({range="Marsyas"})
             end
         else
@@ -481,11 +550,6 @@ end
 
 function self_command(cmd)
     cmd = string.lower(cmd)
-
-    if cmd == 'sing4' then
-        cast_4_songs()
-        return
-    end
 
     if cmd == 'equipweapons' then
         equip_selected_weapons()
@@ -559,15 +623,10 @@ function self_command(cmd)
     end
 end
 
-function cast_4_songs()
-    send_command('input /ma "Honor March" <me>; wait 8; input /ma "Valor Minuet V" <me>; wait 8; input /ma "Valor Minuet IV" <me>; wait 8; input /ma "Blade Madrigal" <me>')
-end
-
 function file_unload()
     windower.send_command('unbind numpad1')
     windower.send_command('unbind numpad2')
     windower.send_command('unbind numpad3')
-    windower.send_command('unbind numpad4')
     windower.send_command('unbind numpad7')
     windower.send_command('unbind numpad9')
     enable('range', 'ammo')
